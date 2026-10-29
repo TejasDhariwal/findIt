@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Session history | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/session-record.css' %}">
+{% endblock %}
+
+{% block content %}
+{% with booking=session_record.rental_request %}
+<main class="session-page page-width">
+    <section class="session-panel session-history-detail" aria-labelledby="session-title">
+        <p class="auth-eyebrow">COMPLETED SESSION</p>
+        <h1 id="session-title">{{ booking.facility.facility_name }}</h1>
+        <p class="session-summary">
+            {{ booking.facility.institution_name }} ·
+            {{ booking.requested_date|date:"D, M j, Y" }} ·
+            {{ booking.starts_at|time:"g:i A" }}–{{ booking.ends_at|time:"g:i A" }}
+        </p>
+
+        <dl class="session-facts">
+            <div>
+                <dt>Facility condition</dt>
+                <dd>{% if session_record.damage_reported %}Damage reported{% else %}No damage{% endif %}</dd>
+            </div>
+            {% if session_record.damage_reported %}
+                <div><dt>Damage details</dt><dd>{{ session_record.damage_description }}</dd></div>
+                <div><dt>Damage cost</dt><dd>₹{{ session_record.damage_cost|floatformat:2 }}</dd></div>
+            {% endif %}
+            <div>
+                <dt>Payment</dt>
+                <dd>{% if session_record.payment_received %}Received{% else %}Not received{% endif %}</dd>
+            </div>
+            <div><dt>Renter</dt><dd>{{ booking.renter.name }}</dd></div>
+            <div><dt>Provider</dt><dd>{{ booking.facility.provider.name }}</dd></div>
+        </dl>
+
+        <section class="session-photos" aria-label="Session photos">
+            <figure>
+                <img
+                    src="{% url 'session_record_photo' session_record.id 'start' %}"
+                    alt="Facility condition at the start of the session"
+                >
+                <figcaption>At the start of the session</figcaption>
+            </figure>
+            <figure>
+                <img
+                    src="{% url 'session_record_photo' session_record.id 'end' %}"
+                    alt="Facility condition at the end of the session"
+                >
+                <figcaption>At the end of the session</figcaption>
+            </figure>
+        </section>
+        <a class="session-back" href="{% url 'account' %}">Back to account</a>
+    </section>
+</main>
+{% endwith %}
+{% endblock %}

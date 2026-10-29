@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101614">
+    <meta name="description" content="{% block description %}Find and rent sports grounds and equipment from local institutions.{% endblock %}">
+    <title>{% block title %}FindIt{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'coreApp/css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'coreApp/css/auth.css' %}">
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navigation page-width" aria-label="Main navigation">
+            <a class="brand" href="{% url 'home' %}" aria-label="FindIt home">
+                <span class="brand-mark" aria-hidden="true">F</span>
+                <span>findit</span>
+            </a>
+            <div class="nav-links">
+                <a class="nav-home" href="{% url 'home' %}">Home</a>
+                {% if user.is_authenticated %}
+                    <a class="nav-account" href="{% url 'account' %}">{{ user.name }}</a>
+                    {% if user.user_type == "provider" %}
+                        <a href="{% url 'add_facility' %}">List a facility</a>
+                    {% endif %}
+                    <form class="nav-logout-form" action="{% url 'log_out' %}" method="post">
+                        {% csrf_token %}
+                        <button class="nav-logout" type="submit">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'sign_in' %}">Sign in</a>
+                    <a class="nav-login" href="{% url 'log_in' %}">Log in</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+        <div class="page-width flash-messages" role="status">
+            {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

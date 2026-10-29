@@ -1,0 +1,20 @@
+<article class="facility-card">
+    <div class="facility-info">
+        <p class="facility-type">{{ facility.institution_name }}</p>
+        <h2>{{ facility.facility_name }}</h2>
+        <p class="facility-address">{{ facility.institution_location }}, {{ facility.institution_state }}</p>
+        <p class="facility-contact">
+            Contact {{ facility.contact_person_name }} ·
+            <a href="tel:{{ facility.contact_no }}">{{ facility.contact_no }}</a>
+        </p>
+    </div>
+    <div class="facility-meta">
+        {% if show_distance %}
+            <span class="facility-distance">{{ facility.distance_km|floatformat:1 }} km away</span>
+        {% endif %}
+        <strong>₹{{ facility.price_per_hour|floatformat:2 }}<small> / hour</small></strong>
+        <a class="request-button" href="{% url 'facility_availability' facility.id %}">
+            I want to rent this · Check availability
+        </a>
+    </div>
+</article>

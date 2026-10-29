@@ -1,0 +1,137 @@
+/* Keep the seven-day availability view readable on wide and narrow screens. */
+.availability-page {
+    min-height: calc(100vh - 83px);
+    padding-block: 54px 72px;
+}
+
+.availability-heading {
+    margin-bottom: 28px;
+}
+
+.availability-heading h1 {
+    margin: 0;
+    font-size: clamp(36px, 7vw, 56px);
+    letter-spacing: -0.07em;
+}
+
+.availability-heading > p:not(.auth-eyebrow) {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.availability-calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 14px;
+}
+
+.availability-day {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(25, 33, 29, 0.88);
+}
+
+.availability-day > header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.availability-day h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.availability-day time,
+.day-hours,
+.day-closed {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.day-hours {
+    margin: 8px 0 14px;
+}
+
+.day-closed {
+    margin: 18px 0 0;
+}
+
+.availability-slots {
+    display: grid;
+    gap: 8px;
+}
+
+.availability-slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.slot-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.slot-checkbox input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.request-selected-slots {
+    display: block;
+    min-height: 46px;
+    margin: 24px auto 0;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #172013;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.request-selected-slots:hover,
+.request-selected-slots:focus-visible {
+    background: #d3ff83;
+}
+
+.availability-slot-requested,
+.availability-slot-booked {
+    color: var(--muted);
+}
+
+.availability-slot-past {
+    opacity: 0.55;
+}
+
+.slot-label {
+    font-size: 11px;
+    font-weight: 650;
+}
+
+@media (max-width: 460px) {
+    .availability-slot {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

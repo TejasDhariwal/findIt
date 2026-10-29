@@ -1,0 +1,169 @@
+/* Keep the search form focused and consistent with the homepage. */
+.find-page {
+    display: grid;
+    min-height: calc(100vh - 83px);
+    place-items: center;
+    padding-block: 48px;
+}
+
+.find-card {
+    width: min(100%, 560px);
+    padding: clamp(24px, 6vw, 44px);
+    border: 1px solid rgba(235, 244, 231, 0.12);
+    border-radius: 22px;
+    background: rgba(25, 33, 29, 0.9);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+}
+
+.find-card h1 {
+    font-size: clamp(32px, 7vw, 48px);
+    letter-spacing: -0.06em;
+    line-height: 1.1;
+}
+
+.find-intro {
+    margin: 12px 0 30px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.find-form {
+    display: grid;
+    gap: 23px;
+}
+
+.location-button {
+    justify-self: start;
+    padding: 5px 0;
+    border: 0;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+.location-button:hover,
+.location-button:focus-visible {
+    text-decoration: underline;
+}
+
+.location-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.location-status {
+    min-height: 18px;
+    margin: -4px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.map-attribution {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.map-attribution a {
+    color: var(--accent);
+}
+
+.find-notice {
+    margin: 0 0 22px;
+    padding: 12px 14px;
+    border: 1px solid rgba(195, 245, 106, 0.2);
+    border-radius: 10px;
+    background: rgba(195, 245, 106, 0.06);
+    color: #dce9ce;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.find-submit {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #172013;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.find-submit:hover,
+.find-submit:focus-visible {
+    transform: translateY(-1px);
+    background: #d3ff83;
+}
+
+/* Group each weekday's closed flag and hours as one clear input unit. */
+.schedule-fields {
+    display: grid;
+    gap: 12px;
+}
+
+.schedule-fields h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.schedule-fields > p {
+    margin: -4px 0 4px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.schedule-day {
+    min-width: 0;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.schedule-day legend {
+    padding-inline: 5px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.schedule-time {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.schedule-time label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.schedule-time .schedule-closed {
+    color: var(--text);
+}
+
+.schedule-time input[type="time"] {
+    width: 110px;
+    padding: 7px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #111915;
+    color: var(--text);
+    font: inherit;
+}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search results | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/find.css' %}">
+    <link rel="stylesheet" href="{% static 'coreApp/css/results.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="results-page page-width">
+    <div class="results-heading">
+        <p class="auth-eyebrow">YOUR SEARCH RESULTS</p>
+        <h1>Places to play near you</h1>
+        <p>Showing <strong>{{ query }}</strong> in {{ city }}, {{ state }}, sorted by distance.</p>
+    </div>
+
+    {% if facilities %}
+        <section class="facility-results" aria-label="Available facilities">
+            {% for facility in facilities %}
+                {% include "partials/facility_card.html" with show_distance=True %}
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="empty-results">
+            <h2>No matching facilities found</h2>
+            <p>Try a different search term, city, or state. Facilities without saved map coordinates are not distance-ranked.</p>
+            <a class="hero-link" href="{% url 'find' %}">Update your search <span aria-hidden="true">↗</span></a>
+        </section>
+    {% endif %}
+</main>
+{% endblock %}

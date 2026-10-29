@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Availability | {{ facility.facility_name }} | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/availability.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="availability-page page-width">
+    <header class="availability-heading">
+        <p class="auth-eyebrow">FACILITY AVAILABILITY</p>
+        <h1>{{ facility.facility_name }}</h1>
+        <p>{{ facility.institution_name }} · {{ facility.institution_location }}, {{ facility.institution_state }}</p>
+        <p>Select one or more one-hour slots. Consecutive selections are combined into one request.</p>
+    </header>
+
+    <form class="slot-request-form" method="post">
+        {% csrf_token %}
+        {% if request_form.non_field_errors %}
+            <div class="form-errors" role="alert">{{ request_form.non_field_errors }}</div>
+        {% endif %}
+        <section class="availability-calendar" aria-label="Availability for seven days">
+            {% for day in calendar %}
+                <article class="availability-day">
+                    <header>
+                        <h2>{{ day.date|date:"l" }}</h2>
+                        <time datetime="{{ day.date|date:'Y-m-d' }}">{{ day.date|date:"M j" }}</time>
+                    </header>
+                    {% if not day.schedule or day.schedule.is_closed %}
+                        <p class="day-closed">Closed</p>
+                    {% else %}
+                        <p class="day-hours">
+                            Open {{ day.schedule.opens_at|time:"g:i A" }}–{{ day.schedule.closes_at|time:"g:i A" }}
+                        </p>
+                        <div class="availability-slots">
+                            {% for slot in day.slots %}
+                                <div class="availability-slot availability-slot-{{ slot.status }}">
+                                    <span>{{ slot.starts_at|time:"g:i A" }}–{{ slot.ends_at|time:"g:i A" }}</span>
+                                    {% if slot.status == "available" %}
+                                        <label class="slot-checkbox" for="slot-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">
+                                            <input
+                                                id="slot-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
+                                                type="checkbox"
+                                                name="selected_slots"
+                                                value="{{ slot.value }}"
+                                                {% if slot.value in selected_slots %}checked{% endif %}
+                                            >
+                                            Select
+                                        </label>
+                                    {% elif slot.status == "requested" %}
+                                        <span class="slot-label">Requested</span>
+                                    {% elif slot.status == "booked" %}
+                                        <span class="slot-label">Booked</span>
+                                    {% else %}
+                                        <span class="slot-label">Past</span>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <p class="day-closed">No one-hour slots during these hours.</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </section>
+        <button class="request-selected-slots" type="submit">Request selected slots</button>
+    </form>
+</main>
+{% endblock %}

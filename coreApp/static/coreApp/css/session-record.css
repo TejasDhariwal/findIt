@@ -1,0 +1,197 @@
+/* Keep provider entry and completed session history aligned with FindIt's theme. */
+.session-page {
+    min-height: calc(100vh - 83px);
+    padding-block: 52px 72px;
+}
+
+.session-panel {
+    width: min(100%, 760px);
+    margin-inline: auto;
+    padding: clamp(22px, 5vw, 40px);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(25, 33, 29, 0.9);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+}
+
+.session-panel h1 {
+    margin: 0;
+    font-size: clamp(32px, 7vw, 48px);
+    letter-spacing: -0.06em;
+    line-height: 1.1;
+}
+
+.session-summary,
+.session-guidance {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.session-guidance {
+    margin: 16px 0 24px;
+}
+
+.session-action {
+    margin-top: 24px;
+    padding: 20px;
+    border: 1px solid rgba(195, 245, 106, 0.16);
+    border-radius: 14px;
+    background: rgba(17, 25, 21, 0.55);
+}
+
+.session-action h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: -0.03em;
+}
+
+.session-action > p {
+    margin: 8px 0 18px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.session-form {
+    display: grid;
+    gap: 18px;
+}
+
+.session-form textarea,
+.session-form input:not([type="file"]),
+.session-form select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid rgba(235, 244, 231, 0.16);
+    border-radius: 9px;
+    outline: none;
+    background: #111915;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+}
+
+.session-form input[type="file"] {
+    max-width: 100%;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+}
+
+.session-form textarea:focus,
+.session-form input:focus,
+.session-form select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(195, 245, 106, 0.1);
+}
+
+.session-form select {
+    color-scheme: dark;
+}
+
+.session-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #172013;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.session-submit:hover,
+.session-submit:focus-visible {
+    background: #d3ff83;
+}
+
+.session-facts {
+    display: grid;
+    margin: 26px 0;
+    border-top: 1px solid var(--line);
+}
+
+.session-facts div {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+}
+
+.session-facts dt {
+    color: var(--muted);
+}
+
+.session-facts dd {
+    margin: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.session-photos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.session-photos figure {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #111915;
+}
+
+.session-photos img {
+    display: block;
+    width: 100%;
+    max-height: 380px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.session-photos figcaption {
+    padding: 11px 12px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.session-back {
+    display: inline-flex;
+    margin-top: 24px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.session-back:hover,
+.session-back:focus-visible {
+    text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+    .session-photos {
+        grid-template-columns: 1fr;
+    }
+
+    .session-facts div {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .session-facts dd {
+        text-align: left;
+    }
+}

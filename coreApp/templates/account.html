@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Your account | FindIt{% endblock %}
+{% block content %}
+<main class="account-page page-width">
+    <header class="account-heading">
+        <p class="auth-eyebrow">YOUR FINDIT ACCOUNT</p>
+        <h1 id="account-title">{{ user.name }}</h1>
+    </header>
+
+    <div class="account-sections">
+        <section class="account-section" aria-labelledby="details-title">
+            <h2 id="details-title">Account details</h2>
+            <dl class="account-details">
+                <div><dt>Account type</dt><dd>{{ user.get_user_type_display }}</dd></div>
+                <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+                <div><dt>Mobile number</dt><dd>{{ user.mobile_no }}</dd></div>
+                <div><dt>Home city</dt><dd>{{ user.city|default:"Not set" }}</dd></div>
+            </dl>
+            <form class="account-city-form" method="post">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label for="{{ city_form.city.id_for_label }}">{{ city_form.city.label }}</label>
+                    {{ city_form.city }}
+                    {% for error in city_form.city.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+                <button class="account-city-submit" type="submit">Update city</button>
+            </form>
+        </section>
+
+        <section class="account-section account-requests" aria-labelledby="requests-title">
+            <h2 id="requests-title">Facility requests</h2>
+            {% if rental_requests %}
+                <div class="request-list">
+                    {% for rental_request in rental_requests %}
+                        <article class="request-item">
+                            {% if rental_request.status == "approved" %}
+                                <a class="session-workspace-link" href="{% url 'session_workspace' rental_request.id %}">
+                            {% endif %}
+                            <div>
+                                <h3>{{ rental_request.facility.facility_name }}</h3>
+                                <p>
+                                    {{ rental_request.facility.institution_name }} ·
+                                    {{ rental_request.requested_date|date:"D, M j" }} ·
+                                    {{ rental_request.starts_at|time:"g:i A" }}–{{ rental_request.ends_at|time:"g:i A" }}
+                                </p>
+                                {% if user.user_type == "provider" %}
+                                    <p>Requested by {{ rental_request.renter.name }} ({{ rental_request.renter.email }})</p>
+                                {% else %}
+                                    <p>Provider: {{ rental_request.facility.provider.name }}</p>
+                                {% endif %}
+                            </div>
+                            {% if rental_request.status == "approved" %}
+                                    <span class="session-open-label">Open booked session <span aria-hidden="true">→</span></span>
+                                </a>
+                            {% endif %}
+                            <span class="request-status request-status-{{ rental_request.status }}">
+                                {{ rental_request.get_status_display }}
+                            </span>
+                            {% if user.user_type == "provider" and rental_request.status == "pending" %}
+                                <div class="request-actions">
+                                    <form method="post" action="{% url 'update_rental_request' rental_request.id 'approve' %}">
+                                        {% csrf_token %}
+                                        <button type="submit">Approve</button>
+                                    </form>
+                                    <form method="post" action="{% url 'update_rental_request' rental_request.id 'reject' %}">
+                                        {% csrf_token %}
+                                        <button type="submit">Decline</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-requests">No rental requests yet.</p>
+            {% endif %}
+        </section>
+
+        <section class="account-section account-history" aria-labelledby="history-title">
+            <h2 id="history-title">History</h2>
+            {% if session_history %}
+                <div class="request-list">
+                    {% for session_record in session_history %}
+                        <a class="history-item" href="{% url 'session_record_detail' session_record.id %}">
+                            <span>
+                                <strong>{{ session_record.rental_request.facility.facility_name }}</strong>
+                                <small>
+                                    {{ session_record.rental_request.requested_date|date:"D, M j, Y" }} ·
+                                    {{ session_record.rental_request.starts_at|time:"g:i A" }}–{{ session_record.rental_request.ends_at|time:"g:i A" }}
+                                </small>
+                            </span>
+                            <span class="history-open">View details <span aria-hidden="true">→</span></span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-requests">Completed session records will appear here.</p>
+            {% endif %}
+        </section>
+    </div>
+
+    <a class="account-home" href="{% url 'home' %}">Back to home <span aria-hidden="true">→</span></a>
+</main>
+{% endblock %}

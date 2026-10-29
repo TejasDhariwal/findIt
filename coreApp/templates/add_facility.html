@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}List a facility | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/find.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="find-page page-width">
+    <section class="find-card" aria-labelledby="facility-title">
+        <p class="auth-eyebrow">FOR SPORTS PROVIDERS</p>
+        <h1 id="facility-title">List a facility</h1>
+        <p class="find-intro">Add your facility details so players nearby can find it.</p>
+
+        <form class="find-form" method="post" id="facility-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {% for field in form %}
+                {% if field.is_hidden %}
+                    {{ field }}
+                {% else %}
+                    <div class="form-field">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <section class="schedule-fields" aria-labelledby="schedule-title">
+                <h2 id="schedule-title">Weekly availability</h2>
+                <p>Set the hours renters can request. Each available slot is one hour.</p>
+                {% if schedule_form.non_field_errors %}
+                    <div class="form-errors" role="alert">{{ schedule_form.non_field_errors }}</div>
+                {% endif %}
+                {% for day, closed, opens, closes in schedule_form.schedule_rows %}
+                    <fieldset class="schedule-day">
+                        <legend>{{ day }}</legend>
+                        <div class="schedule-time">
+                            <label class="schedule-closed" for="{{ closed.id_for_label }}">{{ closed }} Closed</label>
+                            <label for="{{ opens.id_for_label }}">{{ opens.label }} {{ opens }}</label>
+                            <label for="{{ closes.id_for_label }}">{{ closes.label }} {{ closes }}</label>
+                        </div>
+                        {% for error in opens.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                        {% for error in closes.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                    </fieldset>
+                {% endfor %}
+            </section>
+
+            <p class="location-status" id="facility-location-status" role="status" aria-live="polite">
+                The institution address is sent to OpenStreetMap to find its coordinates for distance sorting.
+            </p>
+            <small class="map-attribution">Address lookup by <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>.</small>
+            <button class="find-submit" type="submit">Save facility <span aria-hidden="true">→</span></button>
+        </form>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'coreApp/js/geocoding.js' %}" defer></script>
+    <script src="{% static 'coreApp/js/facility.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Find a place to play | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/find.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="find-page page-width">
+    <section class="find-card" aria-labelledby="find-title">
+        <p class="auth-eyebrow">LET'S GET YOU PLAYING</p>
+        <h1 id="find-title">What are you looking for?</h1>
+        <p class="find-intro">Tell us what you need and where you want to find it.</p>
+
+        <form class="find-form" action="{% url 'search_results' %}" method="post" id="find-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-field">
+                <label for="{{ form.query.id_for_label }}">{{ form.query.label }}</label>
+                {{ form.query }}
+                {% for error in form.query.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.location.id_for_label }}">{{ form.location.label }}</label>
+                {{ form.location }}
+                {% for error in form.location.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                <button class="location-button" id="use-location" type="button">
+                    <span aria-hidden="true">⌖</span> Use my current location
+                </button>
+                <p class="location-status" id="location-status" role="status" aria-live="polite">
+                    Address lookup sends your location to OpenStreetMap. Coordinates are used to sort nearby results.
+                </p>
+                <small class="map-attribution">Address lookup by <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>.</small>
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.state.id_for_label }}">{{ form.state.label }}</label>
+                {{ form.state }}
+                {% for error in form.state.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            </div>
+
+            {{ form.latitude }}
+            {{ form.longitude }}
+            {% for error in form.latitude.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            {% for error in form.longitude.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            <button class="find-submit" type="submit">Find it <span aria-hidden="true">→</span></button>
+        </form>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'coreApp/js/geocoding.js' %}" defer></script>
+    <script src="{% static 'coreApp/js/find.js' %}" defer></script>
+{% endblock %}

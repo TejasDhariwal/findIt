@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Create account | FindIt{% endblock %}
+{% block content %}
+<main class="auth-page page-width">
+    <section class="auth-card" aria-labelledby="signup-title">
+        <p class="auth-eyebrow">GET IN THE GAME</p>
+        <h1 id="signup-title">Create your account</h1>
+        <p class="auth-intro">Join FindIt to rent or share sports spaces and equipment.</p>
+
+        <form class="auth-form" method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<small class="field-help">{{ field.help_text }}</small>{% endif %}
+                    {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+            {% endfor %}
+            <button class="auth-submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="{% url 'log_in' %}">Log in</a></p>
+    </section>
+</main>
+{% endblock %}

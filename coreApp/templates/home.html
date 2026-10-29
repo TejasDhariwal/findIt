@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FindIt | Make room to play{% endblock %}
+{% block description %}FindIt helps you discover and rent sports grounds and equipment from local institutions.{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/results.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main class="hero page-width">
+        <section class="hero-copy" aria-labelledby="hero-title">
+            <p class="eyebrow"><span aria-hidden="true"></span> A better way to get in the game</p>
+            <h1 id="hero-title">Make room<br>to <span>play.</span></h1>
+            <p class="hero-description">
+                Find and rent sports grounds and equipment from institutions in your community.
+                <br class="desktop-break">
+                Make great spaces and gear easier to share, one game at a time.
+            </p>
+            {% if user.is_authenticated %}
+                <a class="hero-link" href="{% url 'find' %}">
+                    Let's find it <span aria-hidden="true">↗</span>
+                </a>
+            {% endif %}
+            <p class="trust-note"><span aria-hidden="true">✳</span> Play more. Own less. Share better.</p>
+        </section>
+
+        <!-- A lightweight inline illustration keeps the hero independent of image downloads. -->
+        <section class="hero-art" id="how-it-works" aria-label="Illustration of shared sports equipment and a playing field">
+            <div class="art-glow"></div>
+            <div class="art-label art-label-top"><span></span> YOUR NEXT GAME STARTS HERE</div>
+            <svg class="court" viewBox="0 0 520 520" role="img" aria-labelledby="court-title">
+                <title id="court-title">A top-down illustration of a sports court</title>
+                <rect x="34" y="34" width="452" height="452" rx="226" fill="#19231e" stroke="#394a3d" stroke-width="2"/>
+                <rect x="86" y="86" width="348" height="348" rx="174" fill="none" stroke="#64745c" stroke-width="2"/>
+                <path d="M260 86v348M86 260h348" stroke="#64745c" stroke-width="2"/>
+                <circle cx="260" cy="260" r="72" fill="none" stroke="#64745c" stroke-width="2"/>
+                <path d="M122 146h88v-60M398 374h-88v60" fill="none" stroke="#64745c" stroke-width="2"/>
+                <path d="M122 374h88v60M398 146h-88V86" fill="none" stroke="#64745c" stroke-width="2"/>
+            </svg>
+            <div class="equipment-card ball-card" aria-hidden="true">
+                <span class="basketball"></span>
+                <span class="equipment-caption">READY WHEN YOU ARE</span>
+            </div>
+            <div class="equipment-card gear-card" aria-hidden="true">
+                <span class="gear-icon">✳</span>
+                <span><strong>Good gear.</strong><small>Shared locally.</small></span>
+            </div>
+            <div class="art-label art-label-bottom"><span class="status-dot"></span> SPACE TO PLAY, NEAR YOU</div>
+        </section>
+    </main>
+
+    {% if user.is_authenticated %}
+        <section class="institution-directory page-width" aria-labelledby="institution-directory-title">
+            <header class="institution-directory-heading">
+                <p class="eyebrow"><span aria-hidden="true"></span> CLOSE TO HOME</p>
+                <h2 id="institution-directory-title">Institutions in {{ user.city|default:"your city" }}</h2>
+                <p>Explore facilities from institutions near you.</p>
+            </header>
+
+            {% if not user.city %}
+                <div class="institution-directory-empty">
+                    <p>Add your city to your account to discover nearby institutions.</p>
+                    <a class="hero-link" href="{% url 'account' %}">Add your city <span aria-hidden="true">↗</span></a>
+                </div>
+            {% elif institutions %}
+                <div class="institution-list">
+                    {% for institution in institutions %}
+                        <a class="institution-card"
+                           href="{% url 'institution_facilities' %}?name={{ institution.institution_name|urlencode }}&amp;location={{ institution.institution_location|urlencode }}&amp;state={{ institution.institution_state|urlencode }}">
+                            <span class="institution-card-mark" aria-hidden="true">↗</span>
+                            <span>
+                                <strong>{{ institution.institution_name }}</strong>
+                                <small>{{ institution.institution_location }}, {{ institution.institution_state }}</small>
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="institution-directory-empty">
+                    <p>No institutions have listed facilities in {{ user.city }} yet.</p>
+                </div>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    <footer class="page-width">
+        <span>FindIt</span>
+        <span>More play, less hassle.</span>
+    </footer>
+{% endblock %}

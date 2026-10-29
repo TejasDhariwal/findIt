@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booked session | {{ rental_request.facility.facility_name }} | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/session-record.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="session-page page-width">
+    <section class="session-panel" aria-labelledby="session-title">
+        <p class="auth-eyebrow">{% if is_provider %}PROVIDER SESSION{% else %}YOUR BOOKED SESSION{% endif %}</p>
+        <h1 id="session-title">{{ rental_request.facility.facility_name }}</h1>
+        <p class="session-summary">
+            {{ rental_request.facility.institution_name }} ·
+            {{ rental_request.requested_date|date:"D, M j, Y" }} ·
+            {{ rental_request.starts_at|time:"g:i A" }}–{{ rental_request.ends_at|time:"g:i A" }}
+        </p>
+
+        <dl class="session-facts">
+            <div>
+                <dt>{% if is_provider %}Renter{% else %}Provider{% endif %}</dt>
+                <dd>{% if is_provider %}{{ rental_request.renter.name }}{% else %}{{ rental_request.facility.provider.name }}{% endif %}</dd>
+            </div>
+            <div>
+                <dt>Session status</dt>
+                <dd>
+                    {% if session_record and session_record.finalized_at %}
+                        Complete
+                    {% else %}
+                        Details in progress
+                    {% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt>Starting photo</dt>
+                <dd>{% if session_record and session_record.starting_photo %}Submitted{% else %}Not submitted{% endif %}</dd>
+            </div>
+            <div>
+                <dt>Provider details</dt>
+                <dd>
+                    {% if session_record and session_record.finalized_at %}
+                        Submitted
+                    {% else %}
+                        Not submitted
+                    {% endif %}
+                </dd>
+            </div>
+            <div>
+                <dt>Ending photo</dt>
+                <dd>{% if session_record and session_record.ending_photo %}Submitted{% else %}Not submitted{% endif %}</dd>
+            </div>
+        </dl>
+
+        {% if session_record and session_record.finalized_at %}
+            <p class="session-guidance">This session record is complete and cannot be changed.</p>
+            <a class="session-submit session-detail-link" href="{% url 'session_record_detail' session_record.id %}">
+                View completed session history
+            </a>
+        {% else %}
+            {% if is_provider %}
+                {% if start_photo_form %}
+                    <section class="session-action" aria-labelledby="start-photo-title">
+                        <h2 id="start-photo-title">Record the facility at the start</h2>
+                        <p>Upload the facility's starting photo to open the next step for the renter.</p>
+                        <form class="session-form" method="post" enctype="multipart/form-data" action="{% url 'submit_provider_session_start_photo' rental_request.id %}">
+                            {% csrf_token %}
+                            {% for field in start_photo_form %}
+                                <div class="form-field">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                                </div>
+                            {% endfor %}
+                            <button class="session-submit" type="submit">Save starting photo</button>
+                        </form>
+                    </section>
+                {% elif provider_details_form %}
+                    <section class="session-action" aria-labelledby="provider-details-title">
+                        <h2 id="provider-details-title">Record session details</h2>
+                        <p>Complete the damage and payment details after the renter has uploaded the ending photo. Saving locks the completed record into History.</p>
+                        <form class="session-form" method="post" action="{% url 'provider_session_record' rental_request.id %}">
+                            {% csrf_token %}
+                            {% for field in provider_details_form %}
+                                <div class="form-field">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                                </div>
+                            {% endfor %}
+                            <button class="session-submit" type="submit">Save provider details</button>
+                        </form>
+                    </section>
+                {% elif not session_record.ending_photo %}
+                    <p class="session-guidance">The starting photo is saved. The renter must upload the ending photo before you can enter final details.</p>
+                {% endif %}
+            {% elif renter_photo_form %}
+                <section class="session-action" aria-labelledby="end-photo-title">
+                    <h2 id="end-photo-title">Record the facility at the end</h2>
+                    <p>Upload the ending photo after the provider's starting photo. This opens the final details step for the provider.</p>
+                    <form class="session-form" method="post" enctype="multipart/form-data" action="{% url 'submit_renter_session_photo' rental_request.id %}">
+                        {% csrf_token %}
+                        {% for field in renter_photo_form %}
+                            <div class="form-field">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                            </div>
+                        {% endfor %}
+                        <button class="session-submit" type="submit">Save ending photo</button>
+                    </form>
+                </section>
+            {% elif not session_record %}
+                <p class="session-guidance">The provider will upload the starting photo here first. Once it is saved, you can add the ending photo.</p>
+            {% elif session_record and session_record.ending_photo and not session_record.finalized_at %}
+                <p class="session-guidance">Your ending photo is saved. The provider will enter the final details and lock the record into History.</p>
+            {% endif %}
+        {% endif %}
+
+        <a class="session-back" href="{% url 'account' %}">Back to account</a>
+    </section>
+</main>
+{% endblock %}

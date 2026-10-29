@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ institution_name }} facilities | FindIt{% endblock %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'coreApp/css/results.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="results-page page-width">
+    <div class="results-heading">
+        <p class="auth-eyebrow">INSTITUTION FACILITIES</p>
+        <h1>{{ institution_name }}</h1>
+        <p>{{ institution_location }}, {{ institution_state }} · {{ city }}</p>
+    </div>
+
+    {% if facilities %}
+        <section class="facility-results" aria-label="Facilities at this institution">
+            {% for facility in facilities %}
+                {% include "partials/facility_card.html" with show_distance=False %}
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="empty-results">
+            <h2>No facilities found</h2>
+            <p>This institution currently has no listed facilities in your city.</p>
+            <a class="hero-link" href="{% url 'home' %}">Back to home <span aria-hidden="true">↗</span></a>
+        </section>
+    {% endif %}
+</main>
+{% endblock %}
